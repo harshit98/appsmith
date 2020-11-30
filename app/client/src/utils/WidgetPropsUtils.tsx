@@ -504,7 +504,9 @@ export const getCanvasSnapRows = (
   bottomRow: number,
   canExtend: boolean,
 ): number => {
-  const totalRows = bottomRow;
+  const totalRows = Math.floor(
+    bottomRow / GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
+  );
 
   // Canvas Widgets do not need to accomodate for widget and container padding.
   // Only when they're extensible

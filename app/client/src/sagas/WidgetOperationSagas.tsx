@@ -400,16 +400,15 @@ export function* deleteSaga(deleteAction: ReduxAction<WidgetDelete>) {
         widgets,
         otherWidgetsToDelete.map(widgets => widgets.widgetId),
       );
-      console.log(finalWidgets[parentId].bottomRow);
       // get bottom most of finalwidgets
       finalWidgets[parentId].bottomRow =
-        finalWidgets[parentId]
+        (finalWidgets[parentId]
           // loop over all childen ids and fetch objects
           .children!.map(c => finalWidgets[c])
           // loop over all children and find lowest bottomRow
           .reduce((max, c) => (c.bottomRow > max ? c.bottomRow : max), 0) +
-        GridDefaults.CANVAS_EXTENSION_OFFSET;
-      console.log(finalWidgets[parentId].bottomRow);
+          GridDefaults.CANVAS_EXTENSION_OFFSET) *
+        GridDefaults.DEFAULT_GRID_ROW_HEIGHT;
       yield put(updateAndSaveLayout(finalWidgets));
     }
   } catch (error) {
@@ -804,10 +803,10 @@ function* updateCanvasSize(
 
   const originalSnapRows = canvasWidget.bottomRow - canvasWidget.topRow;
 
-  const newBottomRow = snapRows;
-  //Math.round(
-  //  snapRows * GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
-  //);
+  console.log("canvas sie update", canvasWidget);
+  const newBottomRow = Math.round(
+    snapRows * GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
+  );
   /* Update the canvas's rows, ONLY if it has changed since the last render */
   if (originalSnapRows !== newBottomRow) {
     // TODO(abhinav): This considers that the topRow will always be zero
