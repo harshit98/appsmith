@@ -803,7 +803,6 @@ function* updateCanvasSize(
 
   const originalSnapRows = canvasWidget.bottomRow - canvasWidget.topRow;
 
-  console.log("canvas sie update", canvasWidget);
   const newBottomRow = Math.round(
     snapRows * GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
   );
