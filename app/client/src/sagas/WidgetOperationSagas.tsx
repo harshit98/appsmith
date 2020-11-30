@@ -400,15 +400,20 @@ export function* deleteSaga(deleteAction: ReduxAction<WidgetDelete>) {
         widgets,
         otherWidgetsToDelete.map(widgets => widgets.widgetId),
       );
-      // get bottom most of finalwidgets
+
+      let lowestBottomRow = 0;
+      const childIds = finalWidgets[parentId].children || [];
+      // find lowest row
+      childIds.forEach(cId => {
+        const child = finalWidgets[cId];
+        if (child.bottomRow > lowestBottomRow) {
+          lowestBottomRow = child.bottomRow;
+        }
+      });
       finalWidgets[parentId].bottomRow =
-        (finalWidgets[parentId]
-          // loop over all childen ids and fetch objects
-          .children!.map(c => finalWidgets[c])
-          // loop over all children and find lowest bottomRow
-          .reduce((max, c) => (c.bottomRow > max ? c.bottomRow : max), 0) +
-          GridDefaults.CANVAS_EXTENSION_OFFSET) *
+        (lowestBottomRow + GridDefaults.CANVAS_EXTENSION_OFFSET) *
         GridDefaults.DEFAULT_GRID_ROW_HEIGHT;
+
       yield put(updateAndSaveLayout(finalWidgets));
     }
   } catch (error) {
